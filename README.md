@@ -19,10 +19,7 @@ Then you will have generated images from `gen000.png` to `gen063.png`. It will t
 
 Here are generated images.
 
-![gen000.png](fig/gen000.png)
-![gen005.png](fig/gen005.png)
-![gen010.png](fig/gen010.png)
-![gen063.png](fig/gen063.png)
+![generated MNIST](fig/mnist.png)
 
 You can see that the generated images becomes clearer and clearer as learning proceeds.
 
