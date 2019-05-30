@@ -20,7 +20,8 @@ layers = tf.contrib.layers
 framework = tf.contrib.framework
 slim = tf.contrib.slim
 
-TRAIN_DATA = 'mnist_train.tfrecord'
+#TRAIN_DATA = 'mnist_train.tfrecord'
+TRAIN_DATA = 'hiragana.tfrecord'
 TOTAL_STEPS = 1600
 INTERVAL = 25
 _NUM_CLASSES = 10

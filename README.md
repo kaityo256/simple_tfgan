@@ -32,6 +32,37 @@ If you want, you can make an animation GIF file with ImageMagick as follow.
 convert -delay 10 -loop 0 gen*.png mnist.gif
 ```
 
+## Hiragana
+
+You can also generate Hiragana. You need a font file `ipaexg.ttf`. You should download it from [IPA](https://ipafont.ipa.go.jp/old/ipafont/download.html) and place it at the same directory.
+
+Generate training data for Hiragana.
+
+```py
+python hiragana.py
+```
+
+It will generates `hiragana.tfrecord`.
+
+Change the following line in `gan_test.py` as,
+
+```py
+#TRAIN_DATA = 'mnist_train.tfrecord'
+TRAIN_DATA = 'hiragana.tfrecord'
+```
+
+and execute it.
+
+```py
+python gan_test.py
+```
+
+You will obtain the generated images something like these.
+
+![generated hiraganas](fig/hiragana.png)
+
 ## License
 
-The source codes in this repository are just extracted ones those from [TensorFlow Models](https://github.com/tensorflow/models). So the copyright holders are TensorFlow Authors. These modified files are available under Apache 2.0 License. See [LICENSE](LICENSE) for details.
+The source codes in this repository are available under Apache 2.0 License. See [LICENSE](LICENSE) for details.
+
+The file `hiragana.py` was written by me. The rest of programs, `gan_test.py` and `prepare_data.py` are just extracted ones from [TensorFlow Models](https://github.com/tensorflow/models). So the copyright holders are TensorFlow Authors.
