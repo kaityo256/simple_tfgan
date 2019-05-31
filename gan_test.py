@@ -203,7 +203,6 @@ gan_train_ops = tfgan.gan_train_ops(
     discriminator_optimizer)
 
 num_images_to_eval = 500
-MNIST_CLASSIFIER_FROZEN_GRAPH = './classify_mnist_graph_def.pb'
 
 # For variables to load, use the same variable scope as in the train job.
 with tf.variable_scope('Generator', reuse=True):
