@@ -3,33 +3,32 @@
 # The original file can be found at the follwoing URL.
 # https://github.com/tensorflow/models
 # ==============================================================================
-try:
-    import matplotlib
-    matplotlib.use('Agg')
-finally:
-    import matplotlib.pyplot as plt
 
-import os
+import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
-
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 tfgan = tf.contrib.gan
 layers = tf.contrib.layers
 framework = tf.contrib.framework
 slim = tf.contrib.slim
+dataprovider = slim.dataset_data_provider.DatasetDataProvider
 
 TRAIN_DATA = 'mnist_train.tfrecord'
 #TRAIN_DATA = 'hiragana.tfrecord'
 TOTAL_STEPS = 1600
 INTERVAL = 25
-_NUM_CLASSES = 10
 BATCH_SIZE = 32
 
 
-def get_split(source):
-    reader = tf.TFRecordReader
+def save_png(data_np, pngfile):
+    plt.axis('off')
+    plt.imshow(np.squeeze(data_np), cmap='gray')
+    print(pngfile)
+    plt.savefig(pngfile)
+
+
+def provide_data(source, batch_size):
     keys_to_features = {
         'image/encoded': tf.FixedLenFeature((), tf.string, default_value=''),
         'image/format': tf.FixedLenFeature((), tf.string, default_value='raw'),
@@ -40,41 +39,12 @@ def get_split(source):
     }
     decoder = slim.tfexample_decoder.TFExampleDecoder(
         keys_to_features, items_to_handlers)
-    return slim.dataset.Dataset(
-        data_sources=source,
-        reader=reader,
-        decoder=decoder,
-        num_samples=datanum,
-        num_classes=_NUM_CLASSES,
-        items_to_descriptions=None)
-
-
-def leaky_relu(net):
-    return tf.nn.leaky_relu(net, alpha=0.01)
-
-
-def visualize_training_generator(data_np, filename):
-    plt.axis('off')
-    plt.imshow(np.squeeze(data_np), cmap='gray')
-    print(filename)
-    plt.savefig(filename)
-
-
-def provide_data(source, batch_size):
-    dataset = get_split(source)
-    provider = slim.dataset_data_provider.DatasetDataProvider(
-        dataset,
-        num_readers=1,
-        common_queue_capacity=2 * batch_size,
-        common_queue_min=batch_size,
-        shuffle=True)
+    reader = tf.TFRecordReader
+    dataset = slim.dataset.Dataset(source, reader, decoder, datanum, None)
+    provider = dataprovider(dataset, shuffle=True)
     image, = provider.get(['image'])
     image = (tf.cast(image, tf.float32) - 128.0) / 128.0
-    images = tf.train.batch(
-        [image],
-        batch_size=batch_size,
-        num_threads=1,
-        capacity=5*batch_size)
+    images = tf.train.batch([image], batch_size=batch_size)
     return images
 
 
@@ -94,17 +64,14 @@ def generator_fn(noise, weight_decay=2.5e-5, is_training=True):
         net = tf.reshape(net, [-1, 7, 7, 256])
         net = layers.conv2d_transpose(net, 64, [4, 4], stride=2)
         net = layers.conv2d_transpose(net, 32, [4, 4], stride=2)
-        net = layers.conv2d(net, 1, 4, normalizer_fn=None,
-                            activation_fn=tf.tanh)
+        net = layers.conv2d(net, 1, 4, activation_fn=tf.tanh)
         return net
 
 
-def discriminator_fn(img, _, weight_decay=2.5e-5,
-                     is_training=True):
+def discriminator_fn(img, _, weight_decay=2.5e-5, is_training=True):
     with framework.arg_scope(
             [layers.conv2d, layers.fully_connected],
-            activation_fn=leaky_relu,
-            normalizer_fn=None,
+            activation_fn=(lambda n: tf.nn.leaky_relu(n, alpha=0.01)),
             weights_regularizer=layers.l2_regularizer(weight_decay),
             biases_regularizer=layers.l2_regularizer(weight_decay)):
         net = layers.conv2d(img, 64, [4, 4], stride=2)
@@ -116,53 +83,55 @@ def discriminator_fn(img, _, weight_decay=2.5e-5,
         return layers.linear(net, 1)
 
 
-if not tf.gfile.Exists(TRAIN_DATA):
-    print("Could not find datasets. Run prepare_data.py.")
-    exit()
+def main():
+    if not tf.gfile.Exists(TRAIN_DATA):
+        print("Could not find datasets. Run prepare_data.py.")
+        exit()
 
-tf.reset_default_graph()
+    tf.reset_default_graph()
 
-with tf.device('/cpu:0'):
-    real_images = provide_data(TRAIN_DATA, BATCH_SIZE)
+    with tf.device('/cpu:0'):
+        real_images = provide_data(TRAIN_DATA, BATCH_SIZE)
 
-noise_dims = 64
-gan_model = tfgan.gan_model(
-    generator_fn,
-    discriminator_fn,
-    real_data=real_images,
-    generator_inputs=tf.random_normal([BATCH_SIZE, noise_dims]))
+    gan_model = tfgan.gan_model(
+        generator_fn,
+        discriminator_fn,
+        real_data=real_images,
+        generator_inputs=tf.random_normal([BATCH_SIZE, 64]))
 
-improved_wgan_loss = tfgan.gan_loss(
-    gan_model,
-    generator_loss_fn=tfgan.losses.wasserstein_generator_loss,
-    discriminator_loss_fn=tfgan.losses.wasserstein_discriminator_loss,
-    gradient_penalty_weight=1.0)
+    improved_wgan_loss = tfgan.gan_loss(
+        gan_model,
+        generator_loss_fn=tfgan.losses.wasserstein_generator_loss,
+        discriminator_loss_fn=tfgan.losses.wasserstein_discriminator_loss,
+        gradient_penalty_weight=1.0)
 
-generator_optimizer = tf.train.AdamOptimizer(0.001, beta1=0.5)
-discriminator_optimizer = tf.train.AdamOptimizer(0.0001, beta1=0.5)
-gan_train_ops = tfgan.gan_train_ops(
-    gan_model,
-    improved_wgan_loss,
-    generator_optimizer,
-    discriminator_optimizer)
+    generator_optimizer = tf.train.AdamOptimizer(0.001, beta1=0.5)
+    discriminator_optimizer = tf.train.AdamOptimizer(0.0001, beta1=0.5)
+    gan_train_ops = tfgan.gan_train_ops(
+        gan_model,
+        improved_wgan_loss,
+        generator_optimizer,
+        discriminator_optimizer)
 
-num_images_to_eval = 500
+    with tf.variable_scope('Generator', reuse=True):
+        eval_images = gan_model.generator_fn(
+            tf.random_normal([500, 64]),
+            is_training=False)
 
-with tf.variable_scope('Generator', reuse=True):
-    eval_images = gan_model.generator_fn(
-        tf.random_normal([num_images_to_eval, noise_dims]),
-        is_training=False)
+    visualizer = tfgan.eval.image_reshaper(eval_images[:20, ...], num_cols=10)
 
-generated_data_to_visualize = tfgan.eval.image_reshaper(
-    eval_images[:20, ...], num_cols=10)
+    train_step_fn = tfgan.get_sequential_train_steps()
+    global_step = tf.train.get_or_create_global_step()
 
-train_step_fn = tfgan.get_sequential_train_steps()
-global_step = tf.train.get_or_create_global_step()
+    with tf.train.SingularMonitoredSession() as sess:
+        for i in range(TOTAL_STEPS):
+            train_step_fn(sess, gan_train_ops, global_step,
+                          train_step_kwargs={})
+            if i % INTERVAL == 0:
+                digits_np = sess.run([visualizer])
+                filename = "gen%03d.png" % (i//INTERVAL)
+                save_png(digits_np, filename)
 
-with tf.train.SingularMonitoredSession() as sess:
-    for i in range(TOTAL_STEPS):
-        train_step_fn(sess, gan_train_ops, global_step, train_step_kwargs={})
-        if i % INTERVAL == 0:
-            digits_np = sess.run([generated_data_to_visualize])
-            filename = "gen%03d.png" % (i//INTERVAL)
-            visualize_training_generator(digits_np, filename)
+
+if __name__ == "__main__":
+    main()
