@@ -2,3 +2,4 @@
 *.tfrecord
 mnist.gif
 ipaexg.ttf
+.ipynb_checkpoints
