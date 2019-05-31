@@ -14,9 +14,9 @@ framework = tf.contrib.framework
 slim = tf.contrib.slim
 dataprovider = slim.dataset_data_provider.DatasetDataProvider
 
-#TRAIN_DATA = 'mnist_train.tfrecord'
+TRAIN_DATA = 'mnist.tfrecord'
 #TRAIN_DATA = 'hiragana.tfrecord'
-TRAIN_DATA = 'fontawesome.tfrecord'
+#TRAIN_DATA = 'fontawesome.tfrecord'
 TOTAL_STEPS = 1600
 INTERVAL = 25
 BATCH_SIZE = 32
@@ -86,7 +86,7 @@ def discriminator_fn(img, _, weight_decay=2.5e-5, is_training=True):
 
 def main():
     if not tf.gfile.Exists(TRAIN_DATA):
-        print("Could not find datasets. Run prepare_data.py.")
+        print("Could not find datasets. Run mnist.py.")
         exit()
 
     tf.reset_default_graph()

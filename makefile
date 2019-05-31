@@ -1,16 +1,20 @@
 all: mnist.gif
+PANDOC=pandoc -s --mathjax -t html --template=template
 
-mnist.gif: mnist_train.tfrecord
+mnist.gif: mnist.tfrecord
 	python gan_test.py
 
-mnist_train.tfrecord:
-	python prepare_data.py
+mnist.tfrecord:
+	python mnist.py
 
 
 .PHONY: clean gif
 
 gif:
 	convert -delay 10 -loop 0 gen*.png mnist.gif
+
+web:
+	$(PANDOC) README.md -o index.html
 
 clean:
 	rm -f gen*.png

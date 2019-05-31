@@ -58,6 +58,14 @@ You will obtain the generated images something like these.
 
 ![generated hiraganas](fig/hiragana.png)
 
+## Dataset
+
+Here are some dataset for learning. They are TFRecord files.
+
+* [MNIST](https://kaityo256.github.io/simple_tfgan/dataset/mnist.tfrecord)
+* [Hiragana](https://kaityo256.github.io/simple_tfgan/dataset/hiragana.tfrecord)
+* [Font Awesome](https://kaityo256.github.io/simple_tfgan/dataset/fontawesome.tfrecord)
+
 ## License
 
 The source codes in this repository are available under Apache 2.0 License. See [LICENSE](LICENSE) for details.

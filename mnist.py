@@ -20,7 +20,7 @@ def bytes_feature(values):
 # The URLs where the MNIST data can be downloaded.
 _DATA_URL = 'http://yann.lecun.com/exdb/mnist/'
 _TRAIN_DATA_FILENAME = 'train-images-idx3-ubyte.gz'
-_TRAIN_FILE = 'mnist_train.tfrecord'
+_TRAIN_FILE = 'mnist.tfrecord'
 
 _IMAGE_SIZE = 28
 _NUM_CHANNELS = 1
