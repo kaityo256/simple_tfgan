@@ -1,5 +1,6 @@
 *.gz
 *.tfrecord
-mnist.gif
-ipaexg.ttf
 .ipynb_checkpoints
+gen*.png
+ipaexg.ttf
+fa-solid-900.ttf
