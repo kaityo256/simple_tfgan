@@ -14,9 +14,9 @@ framework = tf.contrib.framework
 slim = tf.contrib.slim
 dataprovider = slim.dataset_data_provider.DatasetDataProvider
 
-TRAIN_DATA = 'mnist.tfrecord'
+#TRAIN_DATA = 'mnist.tfrecord'
 #TRAIN_DATA = 'hiragana.tfrecord'
-#TRAIN_DATA = 'fontawesome.tfrecord'
+TRAIN_DATA = 'fontawesome.tfrecord'
 TOTAL_STEPS = 1600
 INTERVAL = 25
 BATCH_SIZE = 32

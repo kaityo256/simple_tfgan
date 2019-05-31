@@ -74,7 +74,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>So I extract minimum codes from the tutorial which contains just two files with 270 lines. I hope it would help you to understand TFGAN and to go forward.</p>
 <h2 id="how-to-use">How to use</h2>
 <p>Just run <code>make</code>. Or you can execute step by step.</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">python</span> prepare_data.py
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">python</span> mnist.py
 <span class="ex">python</span> gan_test.py</code></pre></div>
 <p>Then you will have generated images from <code>gen000.png</code> to <code>gen063.png</code>. It will take 10 - 15 minites.</p>
 <p>Here are generated images.</p>
@@ -91,14 +91,32 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="sourceCode"><pre class="sourceCode py"><code class="sourceCode python">python hiragana.py</code></pre></div>
 <p>It will generates <code>hiragana.tfrecord</code>.</p>
 <p>Change the following line in <code>gan_test.py</code> as,</p>
-<div class="sourceCode"><pre class="sourceCode py"><code class="sourceCode python"><span class="co">#TRAIN_DATA = &#39;mnist_train.tfrecord&#39;</span>
-TRAIN_DATA <span class="op">=</span> <span class="st">&#39;hiragana.tfrecord&#39;</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode py"><code class="sourceCode python"><span class="co">#TRAIN_DATA = &#39;mnist.tfrecord&#39;</span>
+TRAIN_DATA <span class="op">=</span> <span class="st">&#39;hiragana.tfrecord&#39;</span>
+<span class="co">#TRAIN_DATA = &#39;fontawesome.tfrecord&#39;</span></code></pre></div>
 <p>and execute it.</p>
 <div class="sourceCode"><pre class="sourceCode py"><code class="sourceCode python">python gan_test.py</code></pre></div>
 <p>You will obtain the generated images something like these.</p>
 <div class="figure">
 <img src="fig/hiragana.png" alt="generated hiraganas" />
 <p class="caption">generated hiraganas</p>
+</div>
+<h2 id="font-awesome">Font Awesome</h2>
+<p>You can choose any images as inputs. I prepared a dataset for Font Awesome.</p>
+<p>You need a font file <code>fa-solid-900.ttf</code>. You should download it from <a href="https://fontawesome.com/">website of Font Awesome</a> and place it at the same directory.</p>
+<p>Generate training data for Font Awesome.</p>
+<div class="sourceCode"><pre class="sourceCode py"><code class="sourceCode python">python fontawesome.py</code></pre></div>
+<p>It will generates <code>fontawesome.tfrecord</code>. It contains only 10 kinds of icons. See <code>fontawesome.py</code>.</p>
+<p>Change the following line in <code>gan_test.py</code> as,</p>
+<div class="sourceCode"><pre class="sourceCode py"><code class="sourceCode python"><span class="co">#TRAIN_DATA = &#39;mnist.tfrecord&#39;</span>
+<span class="co">#TRAIN_DATA = &#39;hiragana.tfrecord&#39;</span>
+TRAIN_DATA <span class="op">=</span> <span class="st">&#39;fontawesome.tfrecord&#39;</span></code></pre></div>
+<p>and execute it.</p>
+<div class="sourceCode"><pre class="sourceCode py"><code class="sourceCode python">python gan_test.py</code></pre></div>
+<p>You will obtain the generated images something like these.</p>
+<div class="figure">
+<img src="fig/fontawesome.png" alt="generated icons" />
+<p class="caption">generated icons</p>
 </div>
 <h2 id="dataset">Dataset</h2>
 <p>Here are some dataset for learning. They are TFRecord files.</p>
@@ -107,9 +125,11 @@ TRAIN_DATA <span class="op">=</span> <span class="st">&#39;hiragana.tfrecord&#39
 <li><a href="https://kaityo256.github.io/simple_tfgan/dataset/hiragana.tfrecord">Hiragana</a></li>
 <li><a href="https://kaityo256.github.io/simple_tfgan/dataset/fontawesome.tfrecord">Font Awesome</a></li>
 </ul>
+<h2 id="jupyter-notebook">Jupyter Notebook</h2>
+<p>You can also run it on Jupyter Nootebook. Try <code>jupyter notebook gan_test.ipynb</code>.</p>
 <h2 id="license">License</h2>
 <p>The source codes in this repository are available under Apache 2.0 License. See <a href="LICENSE" class="uri">LICENSE</a> for details.</p>
-<p>The file <code>hiragana.py</code> was written by me. The rest of programs, <code>gan_test.py</code> and <code>prepare_data.py</code> are just extracted ones from <a href="https://github.com/tensorflow/models">TensorFlow Models</a>. So the copyright holders are TensorFlow Authors.</p>
+<p>The files <code>gan_test.py</code> and <code>mnist.py</code> are just extracted ones from <a href="https://github.com/tensorflow/models">TensorFlow Models</a>. So the copyright holders are TensorFlow Authors. The rest of files were written by me.</p>
 </article>
 </body>
 </html>

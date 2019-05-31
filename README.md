@@ -11,7 +11,7 @@ So I extract minimum codes from the tutorial which contains just two files with 
 Just run `make`. Or you can execute step by step.
 
 ```sh
-python prepare_data.py
+python mnist.py
 python gan_test.py
 ```
 
@@ -44,8 +44,9 @@ It will generates `hiragana.tfrecord`.
 Change the following line in `gan_test.py` as,
 
 ```py
-#TRAIN_DATA = 'mnist_train.tfrecord'
+#TRAIN_DATA = 'mnist.tfrecord'
 TRAIN_DATA = 'hiragana.tfrecord'
+#TRAIN_DATA = 'fontawesome.tfrecord'
 ```
 
 and execute it.
@@ -58,6 +59,38 @@ You will obtain the generated images something like these.
 
 ![generated hiraganas](fig/hiragana.png)
 
+## Font Awesome
+
+You can choose any images as inputs. I prepared a dataset for Font Awesome.
+
+You need a font file `fa-solid-900.ttf`. You should download it from [website of Font Awesome](https://fontawesome.com/) and place it at the same directory.
+
+Generate training data for Font Awesome.
+
+```py
+python fontawesome.py
+```
+
+It will generates `fontawesome.tfrecord`. It contains only 10 kinds of icons. See `fontawesome.py`.
+
+Change the following line in `gan_test.py` as,
+
+```py
+#TRAIN_DATA = 'mnist.tfrecord'
+#TRAIN_DATA = 'hiragana.tfrecord'
+TRAIN_DATA = 'fontawesome.tfrecord'
+```
+
+and execute it.
+
+```py
+python gan_test.py
+```
+
+You will obtain the generated images something like these.
+
+![generated icons](fig/fontawesome.png)
+
 ## Dataset
 
 Here are some dataset for learning. They are TFRecord files.
@@ -66,8 +99,12 @@ Here are some dataset for learning. They are TFRecord files.
 * [Hiragana](https://kaityo256.github.io/simple_tfgan/dataset/hiragana.tfrecord)
 * [Font Awesome](https://kaityo256.github.io/simple_tfgan/dataset/fontawesome.tfrecord)
 
+## Jupyter Notebook
+
+You can also run it on Jupyter Nootebook. Try `jupyter notebook gan_test.ipynb`.
+
 ## License
 
 The source codes in this repository are available under Apache 2.0 License. See [LICENSE](LICENSE) for details.
 
-The file `hiragana.py` was written by me. The rest of programs, `gan_test.py` and `prepare_data.py` are just extracted ones from [TensorFlow Models](https://github.com/tensorflow/models). So the copyright holders are TensorFlow Authors.
+The files `gan_test.py` and `mnist.py` are just extracted ones from [TensorFlow Models](https://github.com/tensorflow/models). So the copyright holders are TensorFlow Authors. The rest of files were written by me.
