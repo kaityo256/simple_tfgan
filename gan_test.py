@@ -7,7 +7,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
-
+tf.logging.set_verbosity(tf.logging.ERROR)
 tfgan = tf.contrib.gan
 layers = tf.contrib.layers
 framework = tf.contrib.framework

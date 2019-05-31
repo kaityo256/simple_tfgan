@@ -13,15 +13,15 @@
 # limitations under the License.
 # ==============================================================================
 
-import os
 import random
+import os
 import sys
 
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 import tensorflow as tf
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+tf.logging.set_verbosity(tf.logging.ERROR)
 
 
 def bytes_feature(values):
