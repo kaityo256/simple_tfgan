@@ -1,5 +1,4 @@
 *.gz
-*.tfrecord
 .ipynb_checkpoints
 gen*.png
 ipaexg.ttf
